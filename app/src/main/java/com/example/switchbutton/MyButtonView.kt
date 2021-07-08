@@ -8,18 +8,15 @@ import android.graphics.Color
 import android.graphics.LinearGradient
 import android.graphics.Shader
 import android.graphics.drawable.GradientDrawable
-import android.text.TextPaint
 import android.util.AttributeSet
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.switchbutton.databinding.ComponentSwitchButtomBinding
 
 
-class MyButtonView : ConstraintLayout, View.OnClickListener{
+class MyButtonView : ConstraintLayout, View.OnTouchListener{
     val TAG ="MyButtonView"
     var leftTxtString = ""
     var rightTxtString = ""
@@ -38,10 +35,15 @@ class MyButtonView : ConstraintLayout, View.OnClickListener{
     val rightChoose = 1
     private lateinit var binding : ComponentSwitchButtomBinding
     var wrappedOnClickListener: OnClickListener ? = null
+    var wrappedOnTouchListener: OnTouchListener ? = null
+
     private val defaultTxtUnChooseColor = "#999999"
     private val defaultTxtChooseColor = "#ffffff"
+
+    //會是view的一半
     private var initX = 0f
     private var initChoose = 0
+    private var nowchoose = 0
     private var firstTimeOnLayout = true
 
     constructor(context: Context): super(context){
@@ -116,69 +118,125 @@ class MyButtonView : ConstraintLayout, View.OnClickListener{
         myChooseGrad.cornerRadius = buttonRadius
         binding.choose.background = myChooseGrad
 
-        binding.myButton.setOnClickListener(this)
+        binding.myButton.setOnTouchListener(this)
 
         //動畫設定
         val container = binding.myButton
         val choose = binding.choose
         val tv1 = binding.tv1
         val tv2 = binding.tv2
-        tv1.isClickable = false
-
-
-        tv1.setOnClickListener {
-            setTextViewColorGradient(tv1,chooseTxtColor,chooseTxtSecondColor)
-            setTextViewColorGradient(tv2,unChooseTxtColor,unChooseTxtSecondColor)
-            val background_w = choose.width
-            val container_w = container.width
-            val x: Int = container_w - background_w
-            Log.i("tag", "onClick: backgroud =%d%n$background_w")
-            val animator: ObjectAnimator = ObjectAnimator.ofFloat(choose, "translationX", x.toFloat(), 0f)
-            tv1.isClickable = false
-            tv2.isClickable = true
-            animator.duration = 200
-            animator.start()
-        }
-        tv2.setOnClickListener {
-            setTextViewColorGradient(tv1,unChooseTxtColor,unChooseTxtSecondColor)
-            setTextViewColorGradient(tv2,chooseTxtColor,chooseTxtSecondColor)
-            val background_w = choose.width
-            val container_w = container.width
-            val x: Int = container_w - background_w
-            Log.i("tag", "onClick: backgroud =%d%n$background_w")
-            val animator: ObjectAnimator = ObjectAnimator.ofFloat(choose, "translationX", 0f, x.toFloat())
-            tv1.isClickable = true
-            tv2.isClickable = false
-            animator.duration = 200
-            animator.start()
-        }
     }
 
-    override fun onClick(view: View?) {
-//        binding.myButton.isSelected = !binding.myButton.isSelected
-//        binding.myText.isSelected = !binding.myText.isSelected
-        Log.e(TAG,"ONCLICK")
-        wrappedOnClickListener?.onClick(view)
+    var beginX = 0f
+    var finishX = 0f
+    var beginY = 0f
+    var finishY = 0f
+    override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+
+        if(event == null) return true
+        when (event.action) {
+            MotionEvent.ACTION_DOWN ->{
+                beginX = event.x
+                beginY = event.y
+            }
+            MotionEvent.ACTION_UP ->{
+                finishX = event.x
+                finishY = event.y
+                if (finishX - beginX > ViewConfiguration.get(context).scaledTouchSlop && getChoose() == leftChoose) {//右滑 && 是左邊被選的時候
+
+                    val container = binding.myButton
+                    val choose = binding.choose
+                    val tv1 = binding.tv1
+                    val tv2 = binding.tv2
+                    setTextViewColorGradient(tv1,unChooseTxtColor,unChooseTxtSecondColor)
+                    setTextViewColorGradient(tv2,chooseTxtColor,chooseTxtSecondColor)
+                    val background_w = choose.width
+                    val container_w = container.width
+                    val x: Int = container_w - background_w
+                    val animator: ObjectAnimator = ObjectAnimator.ofFloat(choose, "translationX", 0f, x.toFloat())
+                    nowchoose = rightChoose
+                    animator.duration = 200
+                    animator.start()
+                }
+
+                if ((finishX - beginX)*-1 > ViewConfiguration.get(context).scaledTouchSlop  && getChoose() == rightChoose) {//左滑 && 是右邊被選的時候
+
+                    val container = binding.myButton
+                    val choose = binding.choose
+                    val tv1 = binding.tv1
+                    val tv2 = binding.tv2
+                    setTextViewColorGradient(tv1,chooseTxtColor,chooseTxtSecondColor)
+                    setTextViewColorGradient(tv2,unChooseTxtColor,unChooseTxtSecondColor)
+                    val background_w = choose.width
+                    val container_w = container.width
+                    val x: Int = container_w - background_w
+                    val animator: ObjectAnimator = ObjectAnimator.ofFloat(choose, "translationX",  x.toFloat(),0f)
+                    nowchoose = leftChoose
+                    animator.duration = 200
+                    animator.start()
+                }
+
+                //檢測移動的距離，如果很微小可以認為是點選事件
+                if (Math.abs(finishX - beginX) < 10 && Math.abs(finishY - beginY) < 10) {
+
+                    val container = binding.myButton
+                    val choose = binding.choose
+                    val tv1 = binding.tv1
+                    val tv2 = binding.tv2
+                    if (event.x < initX && getChoose() == rightChoose){  //點擊左半邊
+                        setTextViewColorGradient(tv1,chooseTxtColor,chooseTxtSecondColor)
+                        setTextViewColorGradient(tv2,unChooseTxtColor,unChooseTxtSecondColor)
+                        val background_w = choose.width
+                        val container_w = container.width
+                        val x: Int = container_w - background_w
+                        val animator: ObjectAnimator = ObjectAnimator.ofFloat(choose, "translationX",  x.toFloat(),0f)
+                        nowchoose = leftChoose
+                        animator.duration = 200
+                        animator.start()
+                    }
+                    if (event.x > initX && getChoose() == leftChoose) {  //點擊右半邊
+                        setTextViewColorGradient(tv1,unChooseTxtColor,unChooseTxtSecondColor)
+                        setTextViewColorGradient(tv2,chooseTxtColor,chooseTxtSecondColor)
+                        val background_w = choose.width
+                        val container_w = container.width
+                        val x: Int = container_w - background_w
+                        val animator: ObjectAnimator = ObjectAnimator.ofFloat(choose, "translationX", 0f, x.toFloat())
+                        nowchoose = rightChoose
+                        animator.duration = 200
+                        animator.start()
+                    }
+
+                }
+
+                beginX = 0f
+                finishX = 0f
+                beginY = 0f
+                finishY = 0f
+            }
+        }
+
+        wrappedOnTouchListener?.onTouch(v, event)
+        //通知 ViewGroup 要接收此事件，事件將不往下傳遞
+        return true
     }
 
-    override fun setOnClickListener(l: OnClickListener?) {
-        wrappedOnClickListener = l
+    override fun setOnTouchListener(l: OnTouchListener?) {
+        wrappedOnTouchListener = l
     }
 
     //0 left 1 right
     fun setDefaultChooseLeftOrRight(leftOrRight : Int){
         initChoose = leftOrRight
+        nowchoose = initChoose
     }
 
     private fun setTextViewColorGradient(tv : TextView, beginColor: String, endColor :String){
-
         val textShader: Shader = LinearGradient(
             0f, 0f, tv.width.toFloat(), tv.height.toFloat(),
             Color.parseColor(beginColor),
             Color.parseColor(endColor),
             Shader.TileMode.CLAMP
         )
-
         tv.paint.shader = textShader
         tv.invalidate()
     }
@@ -193,7 +251,6 @@ class MyButtonView : ConstraintLayout, View.OnClickListener{
             val tv1 = binding.tv1
             val tv2 = binding.tv2
             if (initChoose == 0) {
-                tv1.isClickable = false
                 setTextViewColorGradient(tv1, chooseTxtColor, chooseTxtSecondColor)
                 setTextViewColorGradient(tv2, unChooseTxtColor, unChooseTxtSecondColor)
                 val background_w = choose.width
@@ -201,28 +258,32 @@ class MyButtonView : ConstraintLayout, View.OnClickListener{
                 val x: Int = container_w - background_w
                 val animator: ObjectAnimator =
                     ObjectAnimator.ofFloat(choose, "translationX", initX, 0f)
-                tv1.isClickable = false
-                tv2.isClickable = true
                 animator.duration = 200
                 animator.start()
             } else {
-                tv2.isClickable = false
                 setTextViewColorGradient(tv1, unChooseTxtColor, unChooseTxtSecondColor)
                 setTextViewColorGradient(tv2, chooseTxtColor, chooseTxtSecondColor)
                 val background_w = choose.width
                 val container_w = container.width
                 val x: Int = container_w - background_w
-                Log.i(TAG, "INIT X :" + initX.toString())
-
-                Log.i(TAG, "onClick: backgroud =%d%n$background_w")
                 val animator: ObjectAnimator =
                     ObjectAnimator.ofFloat(choose, "translationX", 0f, initX)
-                tv1.isClickable = true
-                tv2.isClickable = false
                 animator.duration = 200
                 animator.start()
             }
             firstTimeOnLayout = false
         }
+    }
+
+
+    // Because we call this from onTouchEvent, this code will be executed for both
+    // normal touch events and for when the system calls this using Accessibility
+    override fun performClick(): Boolean {
+        super.performClick()
+        return true
+    }
+
+    fun getChoose() : Int{
+        return nowchoose
     }
 }
