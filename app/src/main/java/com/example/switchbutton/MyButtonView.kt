@@ -85,19 +85,19 @@ class MyButtonView : ConstraintLayout, View.OnTouchListener{
     }
 
     private fun getValue(typedArray : TypedArray) {
-        leftTxtString = typedArray.getString(R.styleable.MyButtonView_leftTxtString) ?: ""
-        rightTxtString = typedArray.getString(R.styleable.MyButtonView_rightTxtString) ?: ""
-        chooseTxtColor = typedArray.getString(R.styleable.MyButtonView_chooseTxtColor) ?: defaultTxtChooseColor
-        chooseTxtSecondColor = typedArray.getString(R.styleable.MyButtonView_chooseTxtSecondColor) ?: chooseTxtColor
-        unChooseTxtColor = typedArray.getString(R.styleable.MyButtonView_unChooseTxtColor) ?: defaultTxtUnChooseColor
-        unChooseTxtSecondColor = typedArray.getString(R.styleable.MyButtonView_unChooseTxtSecondColor) ?: unChooseTxtColor
-        txtSize = typedArray.getDimension(R.styleable.MyButtonView_TxtSize,10f)
-        buttonBackgroundColor = typedArray.getString(R.styleable.MyButtonView_buttonBackgroundColor) ?: "#000000"
-        strokeColor = typedArray.getString(R.styleable.MyButtonView_strokeColor) ?: buttonBackgroundColor
-        strokeWidth = typedArray.getInt(R.styleable.MyButtonView_strokeWidth,1)
-        buttonChooseColor = typedArray.getString(R.styleable.MyButtonView_buttonChooseColor) ?: "#2bfbff"
-        buttonChooseTwoColor = typedArray.getString(R.styleable.MyButtonView_buttonChooseTwoColor) ?: buttonChooseColor
-        buttonRadius = typedArray.getDimension(R.styleable.MyButtonView_buttonRadius,15f)
+        leftTxtString = typedArray.getString(R.styleable.MyButtonView_left_txt_string) ?: ""
+        rightTxtString = typedArray.getString(R.styleable.MyButtonView_right_txt_string) ?: ""
+        chooseTxtColor = typedArray.getString(R.styleable.MyButtonView_choose_txt_color) ?: defaultTxtChooseColor
+        chooseTxtSecondColor = typedArray.getString(R.styleable.MyButtonView_choose_txt_second_color) ?: chooseTxtColor
+        unChooseTxtColor = typedArray.getString(R.styleable.MyButtonView_un_choose_txt_color) ?: defaultTxtUnChooseColor
+        unChooseTxtSecondColor = typedArray.getString(R.styleable.MyButtonView_un_choose_txt_second_color) ?: unChooseTxtColor
+        txtSize = typedArray.getDimension(R.styleable.MyButtonView_txt_size,10f)
+        buttonBackgroundColor = typedArray.getString(R.styleable.MyButtonView_button_background_color) ?: "#000000"
+        strokeColor = typedArray.getString(R.styleable.MyButtonView_stroke_color) ?: buttonBackgroundColor
+        strokeWidth = typedArray.getInt(R.styleable.MyButtonView_stroke_width,1)
+        buttonChooseColor = typedArray.getString(R.styleable.MyButtonView_button_choose_color) ?: "#2bfbff"
+        buttonChooseTwoColor = typedArray.getString(R.styleable.MyButtonView_button_choose_two_color) ?: buttonChooseColor
+        buttonRadius = typedArray.getDimension(R.styleable.MyButtonView_button_radius,15f)
 
         typedArray.recycle()
     }

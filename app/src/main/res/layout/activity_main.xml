@@ -11,22 +11,20 @@
         android:id="@+id/mySwitcher"
         android:layout_width="150dp"
         android:layout_height="40dp"
-        app:buttonBackgroundColor="#ffffff"
-        app:leftTxtString="CNY"
-        app:chooseTxtColor="#ffffff"
-        app:unChooseTxtColor="#10B4DD"
-        app:rightTxtString="USDT"
-        app:TxtSize="6dp"
-        app:strokeWidth = "10"
-        app:strokeColor="#FF0000"
-        app:buttonChooseColor="#10B4DD"
-        app:buttonChooseTwoColor="#000000"
-        app:buttonRadius="30dp"
+        app:button_background_color="#ffffff"
+        app:left_txt_string="CNY"
+        app:choose_txt_color="#ffffff"
+        app:un_choose_txt_second_color="#10B4DD"
+        app:right_txt_string="USDT"
+        app:txt_size="6dp"
+        app:stroke_width = "10"
+        app:stroke_color="#FF0000"
+        app:button_choose_color="#10B4DD"
+        app:button_choose_two_color="#000000"
+        app:button_radius="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-<!--    #19CECE-->
-<!--    app:unchooseTxtSecondColor="#19CECE"-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
