@@ -1,3 +1,2 @@
 include ':myswitchbutton'
-include ':app'
 rootProject.name = "SwitchButton"
