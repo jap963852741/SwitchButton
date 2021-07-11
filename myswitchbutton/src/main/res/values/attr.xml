@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="MyButtonView">
+        <attr name="left_txt_string" format="string"/>
+        <attr name="right_txt_string" format="string"/>
+        <attr name="txt_size" format="dimension"/>
+        <attr name="button_background_color" format="string"/>
+        <attr name="stroke_color" format="string"/>
+        <attr name="stroke_width" format="integer"/>
+        <attr name="button_choose_color" format="string"/>
+        <attr name="button_choose_two_color" format="string"/>
+        <attr name="choose_txt_color" format="string"/>
+        <attr name="choose_txt_second_color" format="string"/>
+        <attr name="un_choose_txt_color" format="string"/>
+        <attr name="un_choose_txt_second_color" format="string"/>
+        <attr name="button_radius" format="dimension"/>
+
+    </declare-styleable>
+</resources>

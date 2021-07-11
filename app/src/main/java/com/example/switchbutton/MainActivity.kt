@@ -9,7 +9,7 @@ import android.view.View
 import com.example.switchbutton.databinding.ActivityMainBinding
 import com.example.switchbutton.databinding.ComponentSwitchButtomBinding
 
-class MainActivity : AppCompatActivity() , View.OnTouchListener{
+class MainActivity : AppCompatActivity() , View.OnTouchListener,View.OnClickListener{
     val TAG = "MainActivity"
     private lateinit var binding : ActivityMainBinding
 
@@ -20,8 +20,11 @@ class MainActivity : AppCompatActivity() , View.OnTouchListener{
         binding = ActivityMainBinding.bind(rootView)
         setContentView(binding.root)
         binding.mySwitcher.setDefaultChooseLeftOrRight(1)
+        Log.e(TAG,"2" +
+                "3332")
 
-        binding.mySwitcher.setOnTouchListener(this)
+//        binding.mySwitcher.setOnTouchListener(this)
+        binding.mySwitcher.setOnClickListener(this)
     }
 
     override fun onTouch(v: View?, event: MotionEvent?): Boolean {
@@ -32,6 +35,10 @@ class MainActivity : AppCompatActivity() , View.OnTouchListener{
             }
         }
         return true
+    }
+
+    override fun onClick(v: View?) {
+        Log.e(TAG,binding.mySwitcher.getChoose().toString())
     }
 
 
