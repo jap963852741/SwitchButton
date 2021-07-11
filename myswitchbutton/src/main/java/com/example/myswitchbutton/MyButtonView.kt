@@ -135,6 +135,10 @@ class MyButtonView : ConstraintLayout, View.OnTouchListener ,View.OnClickListene
     override fun onTouch(v: View?, event: MotionEvent?): Boolean {
         if(event == null) return true
 
+        if(wrappedOnTouchListener != null) {
+            wrappedOnTouchListener?.onTouch(v, event)
+        }
+
         when (event.action) {
             MotionEvent.ACTION_DOWN ->{
                 beginX = event.x
@@ -382,9 +386,6 @@ class MyButtonView : ConstraintLayout, View.OnTouchListener ,View.OnClickListene
             }
         }
 
-        if(wrappedOnTouchListener != null) {
-            wrappedOnTouchListener?.onTouch(v, event)
-        }
         //通知 ViewGroup 要接收此事件，事件將不往下傳遞
         return false
     }
