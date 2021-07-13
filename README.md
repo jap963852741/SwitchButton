@@ -5,7 +5,11 @@ Android switchButton
 <br></br>
 
  ![image](https://github.com/jap963852741/SwitchButton/blob/master/example.gif)
- 
+ <br></br>
+<br></br>
+
+ [![](https://jitpack.io/v/jap963852741/SwitchButton.svg)](https://jitpack.io/#jap963852741/SwitchButton)
+
 
 <br></br>
 <br></br>
@@ -53,3 +57,8 @@ Android switchButton
     binding.mySwitcher.setDefaultChooseLeftOrRight(1)   //預設選哪邊 0 左 右 1
     binding.mySwitcher.setOnClickListener(this)  //點擊監聽
     binding.mySwitcher.getChoose()  // 左邊被選返回 0 右邊 1
+    
+    
+    
+    
+
