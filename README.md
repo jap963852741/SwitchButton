@@ -26,7 +26,7 @@ Android switchButton
  Step 2. Add the dependency
 
 	dependencies {
-	        implementation 'com.github.jap963852741:SwitchButton:v1.1.8'
+	        implementation 'com.github.jap963852741:SwitchButton:v1.1.9'
 	}
   
   
@@ -54,7 +54,7 @@ Android switchButton
         app:layout_constraintTop_toTopOf="parent" />
  
  ##  Code
-    binding.mySwitcher.setDefaultChooseLeftOrRight(1)   //預設選哪邊 0 左 右 1
+    binding.mySwitcher.setChooseLeftOrRight(1)   //預設選哪邊 0 左 右 1
     binding.mySwitcher.setOnClickListener(this)  //點擊監聽
     binding.mySwitcher.getChoose()  // 左邊被選返回 0 右邊 1
     
