@@ -463,4 +463,9 @@ class MyButtonView : ConstraintLayout, View.OnTouchListener ,View.OnClickListene
     override fun setOnClickListener(l: OnClickListener?) {
         wrappedOnClickListener = l
     }
+
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        parent.requestDisallowInterceptTouchEvent(true)
+        return super.dispatchTouchEvent(ev)
+    }
 }
