@@ -7,11 +7,11 @@ import android.graphics.Color
 import android.graphics.LinearGradient
 import android.graphics.Shader
 import android.graphics.drawable.GradientDrawable
+import android.support.constraint.ConstraintLayout
 import android.util.AttributeSet
 import android.util.Log
 import android.view.*
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.myswitchbutton.databinding.ComponentSwitchButtomBinding
 import kotlinx.android.synthetic.main.component_switch_buttom.view.*
 
