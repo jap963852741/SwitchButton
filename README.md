@@ -26,7 +26,7 @@ Android switchButton
  Step 2. Add the dependency
 
 	dependencies {
-	        implementation 'com.github.jap963852741:SwitchButton:v1.1.9'
+	        implementation 'com.github.jap963852741:SwitchButton:1.0.0'
 	}
   
   
