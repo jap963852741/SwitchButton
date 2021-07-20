@@ -64,9 +64,12 @@ Android switchButton
 | un_choose_txt_color | color | 按鈕-沒被選擇邊-的顏色 |   
 | left_txt_string | string | 左邊文字設定 |   
 | right_txt_string | string | 右邊文字設定 |   
- <br></br>
-更詳細設定請參照 (https://github.com/jap963852741/SwitchButton/blob/master/myswitchbutton/src/main/res/values/attr.xml)
- 
+
+
+
+更詳細設定請參照 ----> [這裡](https://github.com/jap963852741/SwitchButton/blob/master/myswitchbutton/src/main/res/values/attr.xml)
+<br></br>
+<br></br>
  
  ##  Code Example
     binding.mySwitcher.setChooseLeftOrRight(1)   //預設選哪邊 0 左 右 1
