@@ -7,11 +7,11 @@ import android.graphics.Color
 import android.graphics.LinearGradient
 import android.graphics.Shader
 import android.graphics.drawable.GradientDrawable
+import android.support.constraint.ConstraintLayout
 import android.util.AttributeSet
 import android.util.Log
 import android.view.*
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.myswitchbutton.databinding.ComponentSwitchButtomBinding
 import kotlinx.android.synthetic.main.component_switch_buttom.view.*
 
@@ -395,9 +395,34 @@ class MyButtonView : ConstraintLayout, View.OnTouchListener ,View.OnClickListene
     }
 
     //0 left 1 right
-    fun setDefaultChooseLeftOrRight(leftOrRight : Int){
+    fun setChooseLeftOrRight(leftOrRight : Int){
         initChoose = leftOrRight
         nowchoose = initChoose
+        val container = binding.myButton
+        val choose = binding.choose
+        val tv1 = binding.tv1
+        val tv2 = binding.tv2
+        if(leftOrRight == leftChoose){
+            setTextViewColorGradient(tv1,chooseTxtColor,chooseTxtSecondColor)
+            setTextViewColorGradient(tv2,unChooseTxtColor,unChooseTxtSecondColor)
+            val background_w = choose.width
+            val container_w = container.width
+            val x: Int = container_w - background_w
+            val animator: ObjectAnimator = ObjectAnimator.ofFloat(choose, "translationX",  x.toFloat(),0f)
+            nowchoose = leftChoose
+            animator.duration = 0
+            animator.start()
+        }else if(leftOrRight == rightChoose){
+            setTextViewColorGradient(tv1,unChooseTxtColor,unChooseTxtSecondColor)
+            setTextViewColorGradient(tv2,chooseTxtColor,chooseTxtSecondColor)
+            val background_w = choose.width
+            val container_w = container.width
+            val x: Int = container_w - background_w
+            val animator: ObjectAnimator = ObjectAnimator.ofFloat(choose, "translationX", 0f, x.toFloat())
+            nowchoose = rightChoose
+            animator.duration = 0
+            animator.start()
+        }
     }
 
     private fun setTextViewColorGradient(tv : TextView, beginColor: String, endColor :String){
@@ -462,5 +487,10 @@ class MyButtonView : ConstraintLayout, View.OnTouchListener ,View.OnClickListene
 
     override fun setOnClickListener(l: OnClickListener?) {
         wrappedOnClickListener = l
+    }
+
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        parent.requestDisallowInterceptTouchEvent(true)
+        return super.dispatchTouchEvent(ev)
     }
 }

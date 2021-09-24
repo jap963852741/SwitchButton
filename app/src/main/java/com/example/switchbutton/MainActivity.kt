@@ -1,7 +1,7 @@
 package com.example.switchbutton
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() , View.OnTouchListener,View.OnClickList
         val rootView = LayoutInflater.from(this).inflate(R.layout.activity_main, null)
         binding = ActivityMainBinding.bind(rootView)
         setContentView(binding.root)
-        binding.mySwitcher.setDefaultChooseLeftOrRight(1)
+        binding.mySwitcher.setChooseLeftOrRight(0)
         Log.e(TAG,"2" +
                 "3332")
 
