@@ -9,34 +9,32 @@ import android.graphics.Shader
 import android.graphics.drawable.GradientDrawable
 import android.support.constraint.ConstraintLayout
 import android.util.AttributeSet
-import android.util.Log
 import android.view.*
 import android.widget.TextView
-import com.example.myswitchbutton.databinding.ComponentSwitchButtomBinding
 import kotlinx.android.synthetic.main.component_switch_buttom.view.*
-
+import com.example.myswitchbutton.*
+import com.example.myswitchbutton.MyButtonParameter.buttonBackgroundColor
+import com.example.myswitchbutton.MyButtonParameter.buttonChooseColor
+import com.example.myswitchbutton.MyButtonParameter.buttonChooseTwoColor
+import com.example.myswitchbutton.MyButtonParameter.buttonRadius
+import com.example.myswitchbutton.MyButtonParameter.chooseTxtColor
+import com.example.myswitchbutton.MyButtonParameter.chooseTxtSecondColor
+import com.example.myswitchbutton.MyButtonParameter.leftChoose
+import com.example.myswitchbutton.MyButtonParameter.leftTxtString
+import com.example.myswitchbutton.MyButtonParameter.noChoose
+import com.example.myswitchbutton.MyButtonParameter.rightChoose
+import com.example.myswitchbutton.MyButtonParameter.rightTxtString
+import com.example.myswitchbutton.MyButtonParameter.strokeColor
+import com.example.myswitchbutton.MyButtonParameter.strokeWidth
+import com.example.myswitchbutton.MyButtonParameter.txtSize
+import com.example.myswitchbutton.MyButtonParameter.unChooseTxtColor
+import com.example.myswitchbutton.MyButtonParameter.unChooseTxtSecondColor
 
 class MyButtonView : ConstraintLayout, View.OnTouchListener ,View.OnClickListener{
     val TAG ="MyButtonView"
-    var leftTxtString = ""
-    var rightTxtString = ""
-    var txtSize = 0f
-    var buttonBackgroundColor = ""
-    var buttonChooseColor = ""
-    var buttonChooseTwoColor = ""
-    var strokeColor = ""
-    var strokeWidth = 0
-    var buttonRadius = 0f
-    var chooseTxtColor = ""
-    var chooseTxtSecondColor = ""
-    var unChooseTxtColor = ""
-    var unChooseTxtSecondColor = ""
-    val noChoose = -1
-    val leftChoose = 0
-    val rightChoose = 1
-    private lateinit var binding : ComponentSwitchButtomBinding
-    private lateinit var mVelocityTracker : VelocityTracker
 
+    val ANIMATOR_LEFT_TO_RIGHT = 0
+    val ANIMATOR_RIGHT_TO_LEFT = 1
     var wrappedOnClickListener: OnClickListener ? = null
     var wrappedOnTouchListener: OnTouchListener ? = null
 
@@ -91,15 +89,16 @@ class MyButtonView : ConstraintLayout, View.OnTouchListener ,View.OnClickListene
     }
 
     private fun initView(){
-        binding = ComponentSwitchButtomBinding.inflate(LayoutInflater.from(context), this)
+//        binding = ComponentSwitchButtominflate(LayoutInflater.from(context), this)
+        LayoutInflater.from(context).inflate(R.layout.component_switch_buttom,this)
         val txtLayoutParams = LayoutParams(LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT)
-        binding.myButton.layoutParams = txtLayoutParams
-        binding.tv1.text = leftTxtString
-        binding.tv1.textSize = txtSize
-        binding.tv2.text = rightTxtString
-        binding.tv2.textSize = txtSize
+        myButton.layoutParams = txtLayoutParams
+        tv1.text = leftTxtString
+        tv1.textSize = txtSize
+        tv2.text = rightTxtString
+        tv2.textSize = txtSize
 
-        val myGrad = binding.myButton.background as GradientDrawable
+        val myGrad = myButton.background as GradientDrawable
         myGrad.setColor(Color.parseColor(buttonBackgroundColor))
         myGrad.cornerRadius = buttonRadius
         myGrad.setStroke(strokeWidth,Color.parseColor(strokeColor))
@@ -109,16 +108,10 @@ class MyButtonView : ConstraintLayout, View.OnTouchListener ,View.OnClickListene
             intArrayOf(Color.parseColor(buttonChooseColor), Color.parseColor(buttonChooseTwoColor))
         )
         myChooseGrad.cornerRadius = buttonRadius
-        binding.choose.background = myChooseGrad
+        choose.background = myChooseGrad
 
-        binding.myButton.setOnTouchListener(this)
-        binding.myButton.setOnClickListener(this)
-
-        //動畫設定
-//        val container = binding.myButton
-//        val choose = binding.choose
-//        val tv1 = binding.tv1
-//        val tv2 = binding.tv2
+        myButton.setOnTouchListener(this)
+        myButton.setOnClickListener(this)
     }
 
     var beginX = 0f
@@ -166,9 +159,9 @@ class MyButtonView : ConstraintLayout, View.OnTouchListener ,View.OnClickListene
                         tempMoveX = 0f
                     }
                     totalMoveX +=  moveFinishX - moveBeginX
-                    val choose = binding.choose
-                    val tv1 = binding.tv1
-                    val tv2 = binding.tv2
+                    val choose = choose
+                    val tv1 = tv1
+                    val tv2 = tv2
                     setTextViewColorGradient(tv1,unChooseTxtColor,unChooseTxtSecondColor)
                     setTextViewColorGradient(tv2,chooseTxtColor,chooseTxtSecondColor)
                     val animator: ObjectAnimator = ObjectAnimator.ofFloat(choose, "translationX", beginX, tempMoveX)
@@ -187,9 +180,9 @@ class MyButtonView : ConstraintLayout, View.OnTouchListener ,View.OnClickListene
                         tempMoveX = 0f
                     }
                     totalMoveX +=  moveFinishX - moveBeginX
-                    val choose = binding.choose
-                    val tv1 = binding.tv1
-                    val tv2 = binding.tv2
+                    val choose = choose
+                    val tv1 = tv1
+                    val tv2 = tv2
                     setTextViewColorGradient(tv1,chooseTxtColor,chooseTxtSecondColor)
                     setTextViewColorGradient(tv2,unChooseTxtColor,unChooseTxtSecondColor)
                     val animator: ObjectAnimator = ObjectAnimator.ofFloat(choose, "translationX", choose.width.toFloat(),choose.width+tempMoveX)
@@ -204,25 +197,23 @@ class MyButtonView : ConstraintLayout, View.OnTouchListener ,View.OnClickListene
 
 
             MotionEvent.ACTION_UP ->{
-
-//                moveLeftOrRight = if(moveFinishX > moveBeginX) rightChoose else leftChoose
                 //左邊開始 左右滑動 && 結束方向
                 if(moveLeftOrRight == leftChoose && getChoose() == leftChoose){
-                    if(choose.x > binding.myButton.width*1/8) {
+                    if(choose.x > myButton.width*1/8) {
                         moveLeftOrRight = rightChoose
                     }
                 }else if(moveLeftOrRight == rightChoose && getChoose() == leftChoose){
-                    if(choose.x < binding.myButton.width*1/8) {
+                    if(choose.x < myButton.width*1/8) {
                         moveLeftOrRight = leftChoose
                     }
                 }
                 //右邊開始 左右滑動 && 結束方向
                 else if(moveLeftOrRight == leftChoose && getChoose() == rightChoose){
-                    if(choose.x > binding.myButton.width*3/8) {
+                    if(choose.x > myButton.width*3/8) {
                         moveLeftOrRight = rightChoose
                     }
                 }else if(moveLeftOrRight == rightChoose && getChoose() == rightChoose){
-                    if(choose.x < binding.myButton.width*3/8) {
+                    if(choose.x < myButton.width*3/8) {
                         moveLeftOrRight = leftChoose
                     }
                 }
@@ -235,10 +226,10 @@ class MyButtonView : ConstraintLayout, View.OnTouchListener ,View.OnClickListene
                     && getChoose() == leftChoose
                     && moveLeftOrRight == rightChoose) {
 //                    Log.e(TAG,"ACTION_UP MOVE : 1 ")
-                    val container = binding.myButton
-                    val choose = binding.choose
-                    val tv1 = binding.tv1
-                    val tv2 = binding.tv2
+                    val container = myButton
+                    val choose = choose
+                    val tv1 = tv1
+                    val tv2 = tv2
                     setTextViewColorGradient(tv1,unChooseTxtColor,unChooseTxtSecondColor)
                     setTextViewColorGradient(tv2,chooseTxtColor,chooseTxtSecondColor)
                     val background_w = choose.width
@@ -254,12 +245,10 @@ class MyButtonView : ConstraintLayout, View.OnTouchListener ,View.OnClickListene
                 if (Math.abs(finishX - beginX ) > ViewConfiguration.get(context).scaledTouchSlop
                     && getChoose() == leftChoose
                     && moveLeftOrRight == leftChoose) {
-//                    Log.e(TAG,"ACTION_UP MOVE : 2 ")
-
-                    val container = binding.myButton
-                    val choose = binding.choose
-                    val tv1 = binding.tv1
-                    val tv2 = binding.tv2
+                    val container = myButton
+                    val choose = choose
+                    val tv1 = tv1
+                    val tv2 = tv2
                     setTextViewColorGradient(tv1,chooseTxtColor,chooseTxtSecondColor)
                     setTextViewColorGradient(tv2,unChooseTxtColor,unChooseTxtSecondColor)
                     val background_w = choose.width
@@ -277,10 +266,10 @@ class MyButtonView : ConstraintLayout, View.OnTouchListener ,View.OnClickListene
                     && getChoose() == rightChoose
                     && moveLeftOrRight == rightChoose) {
 //                    Log.e(TAG,"ACTION_UP MOVE : 3 ")
-                    val container = binding.myButton
-                    val choose = binding.choose
-                    val tv1 = binding.tv1
-                    val tv2 = binding.tv2
+                    val container = myButton
+                    val choose = choose
+                    val tv1 = tv1
+                    val tv2 = tv2
                     setTextViewColorGradient(tv1,unChooseTxtColor,unChooseTxtSecondColor)
                     setTextViewColorGradient(tv2,chooseTxtColor,chooseTxtSecondColor)
                     val background_w = choose.width
@@ -297,11 +286,10 @@ class MyButtonView : ConstraintLayout, View.OnTouchListener ,View.OnClickListene
                     && getChoose() == rightChoose
                     && moveLeftOrRight == leftChoose) {
 //                    Log.e(TAG,"ACTION_UP MOVE : 4 ")
-
-                    val container = binding.myButton
-                    val choose = binding.choose
-                    val tv1 = binding.tv1
-                    val tv2 = binding.tv2
+                    val container = myButton
+                    val choose = choose
+                    val tv1 = tv1
+                    val tv2 = tv2
                     setTextViewColorGradient(tv1,chooseTxtColor,chooseTxtSecondColor)
                     setTextViewColorGradient(tv2,unChooseTxtColor,unChooseTxtSecondColor)
                     val background_w = choose.width
@@ -314,63 +302,34 @@ class MyButtonView : ConstraintLayout, View.OnTouchListener ,View.OnClickListene
                 }
 
                 //檢測移動的距離，如果很微小可以認為是點選事件
-                // &&
-                //                    Math.abs(finishY - beginY) < ViewConfiguration.get(context).scaledTouchSlop)
                 if (Math.abs(finishX - beginX) < ViewConfiguration.get(context).scaledTouchSlop){
-
-                    val container = binding.myButton
-                    val choose = binding.choose
-                    val tv1 = binding.tv1
-                    val tv2 = binding.tv2
+                    val tv1 = tv1
+                    val tv2 = tv2
                     if (event.x < initX && getChoose() == rightChoose){  //點擊左半邊
-//                        Log.e(TAG,"ACTION_UP MOVE : 5 ")
                         setTextViewColorGradient(tv1,chooseTxtColor,chooseTxtSecondColor)
                         setTextViewColorGradient(tv2,unChooseTxtColor,unChooseTxtSecondColor)
-                        val background_w = choose.width
-                        val container_w = container.width
-                        val x: Int = container_w - background_w
-                        val animator: ObjectAnimator = ObjectAnimator.ofFloat(choose, "translationX",  x.toFloat(),0f)
                         nowchoose = leftChoose
-                        animator.duration = 200
-                        animator.start()
-                    }
-
-                    if (event.x < initX && getChoose() == leftChoose){  //點擊左半邊
+                        objectAnimator(200, ANIMATOR_RIGHT_TO_LEFT)
+                    }else if (event.x < initX && getChoose() == leftChoose){  //點擊左半邊
 //                        Log.e(TAG,"ACTION_UP MOVE : 6 ")
                         setTextViewColorGradient(tv1,chooseTxtColor,chooseTxtSecondColor)
                         setTextViewColorGradient(tv2,unChooseTxtColor,unChooseTxtSecondColor)
-                        val background_w = choose.width
-                        val container_w = container.width
-                        val x: Int = container_w - background_w
-                        val animator: ObjectAnimator = ObjectAnimator.ofFloat(choose, "translationX",  x.toFloat(),0f)
                         nowchoose = leftChoose
-                        animator.duration = 0
-                        animator.start()
+                        objectAnimator(0, ANIMATOR_RIGHT_TO_LEFT)
                     }
 
                     if (event.x > initX && getChoose() == leftChoose) {  //點擊右半邊
 //                        Log.e(TAG,"ACTION_UP MOVE : 7 ")
                         setTextViewColorGradient(tv1,unChooseTxtColor,unChooseTxtSecondColor)
                         setTextViewColorGradient(tv2,chooseTxtColor,chooseTxtSecondColor)
-                        val background_w = choose.width
-                        val container_w = container.width
-                        val x: Int = container_w - background_w
-                        val animator: ObjectAnimator = ObjectAnimator.ofFloat(choose, "translationX", 0f, x.toFloat())
                         nowchoose = rightChoose
-                        animator.duration = 200
-                        animator.start()
-                    }
-                    if (event.x > initX && getChoose() == rightChoose) {  //點擊右半邊
+                        objectAnimator(200, ANIMATOR_LEFT_TO_RIGHT)
+                    }else if(event.x > initX && getChoose() == rightChoose) {  //點擊右半邊
 //                        Log.e(TAG,"ACTION_UP MOVE : 8 ")
                         setTextViewColorGradient(tv1,unChooseTxtColor,unChooseTxtSecondColor)
                         setTextViewColorGradient(tv2,chooseTxtColor,chooseTxtSecondColor)
-                        val background_w = choose.width
-                        val container_w = container.width
-                        val x: Int = container_w - background_w
-                        val animator: ObjectAnimator = ObjectAnimator.ofFloat(choose, "translationX", 0f, x.toFloat())
                         nowchoose = rightChoose
-                        animator.duration = 0
-                        animator.start()
+                        objectAnimator(0, ANIMATOR_LEFT_TO_RIGHT)
                     }
                 }
 
@@ -398,10 +357,10 @@ class MyButtonView : ConstraintLayout, View.OnTouchListener ,View.OnClickListene
     fun setChooseLeftOrRight(leftOrRight : Int){
         initChoose = leftOrRight
         nowchoose = initChoose
-        val container = binding.myButton
-        val choose = binding.choose
-        val tv1 = binding.tv1
-        val tv2 = binding.tv2
+        val container = myButton
+        val choose = choose
+        val tv1 = tv1
+        val tv2 = tv2
         if(leftOrRight == leftChoose){
             setTextViewColorGradient(tv1,chooseTxtColor,chooseTxtSecondColor)
             setTextViewColorGradient(tv2,unChooseTxtColor,unChooseTxtSecondColor)
@@ -425,6 +384,22 @@ class MyButtonView : ConstraintLayout, View.OnTouchListener ,View.OnClickListene
         }
     }
 
+    private fun objectAnimator(timeToDelay:Long,ANIMATOR_FLAG:Int){
+        val container = myButton
+        val choose = choose
+        val backgroundW = choose.width
+        val containerW = container.width
+        val x: Int = containerW - backgroundW
+        var animator: ObjectAnimator
+        animator = if(ANIMATOR_FLAG == ANIMATOR_LEFT_TO_RIGHT) {
+            ObjectAnimator.ofFloat(choose, TRANSLATION_X, 0f, x.toFloat())
+        }else {
+            ObjectAnimator.ofFloat(choose, TRANSLATION_X, x.toFloat(), 0f)
+        }
+        animator.duration = timeToDelay
+        animator.start()
+    }
+
     private fun setTextViewColorGradient(tv : TextView, beginColor: String, endColor :String){
         val textShader: Shader = LinearGradient(
             0f, 0f, tv.width.toFloat(), tv.height.toFloat(),
@@ -441,16 +416,12 @@ class MyButtonView : ConstraintLayout, View.OnTouchListener ,View.OnClickListene
         initX = (right - left).toFloat()/2
 
         if(firstTimeOnLayout) {
-            val container = binding.myButton
-            val choose = binding.choose
-            val tv1 = binding.tv1
-            val tv2 = binding.tv2
+            val choose = choose
+            val tv1 = tv1
+            val tv2 = tv2
             if (initChoose == 0) {
                 setTextViewColorGradient(tv1, chooseTxtColor, chooseTxtSecondColor)
                 setTextViewColorGradient(tv2, unChooseTxtColor, unChooseTxtSecondColor)
-                val background_w = choose.width
-                val container_w = container.width
-//                val x: Int = container_w - background_w
                 val animator: ObjectAnimator =
                     ObjectAnimator.ofFloat(choose, "translationX", initX, 0f)
                 animator.duration = 200
@@ -458,9 +429,6 @@ class MyButtonView : ConstraintLayout, View.OnTouchListener ,View.OnClickListene
             } else {
                 setTextViewColorGradient(tv1, unChooseTxtColor, unChooseTxtSecondColor)
                 setTextViewColorGradient(tv2, chooseTxtColor, chooseTxtSecondColor)
-                val background_w = choose.width
-                val container_w = container.width
-//                val x: Int = container_w - background_w
                 val animator: ObjectAnimator =
                     ObjectAnimator.ofFloat(choose, "translationX", 0f, initX)
                 animator.duration = 200
@@ -479,7 +447,6 @@ class MyButtonView : ConstraintLayout, View.OnTouchListener ,View.OnClickListene
     fun getChoose() : Int{
         return nowchoose
     }
-
 
     override fun onClick(view: View?) {
         wrappedOnClickListener?.onClick(view)

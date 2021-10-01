@@ -1,3 +1,4 @@
-<manifest package="com.example.myswitchbutton">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.myswitchbutton">
 
 </manifest>
