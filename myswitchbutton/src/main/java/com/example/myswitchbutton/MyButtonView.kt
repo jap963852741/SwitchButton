@@ -12,7 +12,6 @@ import android.util.AttributeSet
 import android.view.*
 import android.widget.TextView
 import kotlinx.android.synthetic.main.component_switch_buttom.view.*
-import com.example.myswitchbutton.*
 import com.example.myswitchbutton.MyButtonParameter.buttonBackgroundColor
 import com.example.myswitchbutton.MyButtonParameter.buttonChooseColor
 import com.example.myswitchbutton.MyButtonParameter.buttonChooseTwoColor
@@ -32,9 +31,9 @@ import com.example.myswitchbutton.MyButtonParameter.unChooseTxtSecondColor
 import kotlin.math.abs
 
 class MyButtonView : ConstraintLayout, View.OnTouchListener, View.OnClickListener {
-    val TAG = "MyButtonView"
 
     private val HALF_LENGTH_X: Float by lazy { (myButton.width - choose.width).toFloat() }
+    private val A_QUARTER_LENGTH_X: Float by lazy { (myButton.width / 4).toFloat() }
     private val ANIMATOR_LEFT_TO_RIGHT = 0
     private val ANIMATOR_RIGHT_TO_LEFT = 1
     private var wrappedOnClickListener: OnClickListener? = null
@@ -48,7 +47,8 @@ class MyButtonView : ConstraintLayout, View.OnTouchListener, View.OnClickListene
     //會是view的一半
     private var initX = 0f
     private var initChoose = 0
-    private var nowchoose = 0
+    var nowChoose = 0
+        private set
     private var firstTimeOnLayout = true
 
     constructor(context: Context) : super(context) {
@@ -102,7 +102,6 @@ class MyButtonView : ConstraintLayout, View.OnTouchListener, View.OnClickListene
     }
 
     private fun initView() {
-//        binding = ComponentSwitchButtominflate(LayoutInflater.from(context), this)
         LayoutInflater.from(context).inflate(R.layout.component_switch_buttom, this)
         val txtLayoutParams =
             LayoutParams(LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
@@ -125,14 +124,14 @@ class MyButtonView : ConstraintLayout, View.OnTouchListener, View.OnClickListene
         tv2.textSize = txtSize
     }
 
-    var beginX = 0f
-    var finishX = 0f
+    private var beginX = 0f
+    private var finishX = 0f
 
-    var moveBeginX = 0f
-    var moveFinishX = 0f
+    private var moveBeginX = 0f
+    private var moveFinishX = 0f
 
-    var totalMoveX = 0f
-    var endOfLeftOrRight = noChoose
+    private var totalMoveX = 0f
+    private var endOfLeftOrRight = noChoose
 
     override fun onTouch(v: View?, event: MotionEvent?): Boolean {
         if (event == null) return true
@@ -150,9 +149,9 @@ class MyButtonView : ConstraintLayout, View.OnTouchListener, View.OnClickListene
                 endOfLeftOrRight = if (moveFinishX > moveBeginX) rightChoose else leftChoose
 
                 //左邊左右滑動  右邊左右滑動
-                if (getChoose() == leftChoose && choose.x <= choose.width && choose.x >= 0f) {
+                if (nowChoose == leftChoose && choose.x <= choose.width && choose.x >= 0f) {
                     leftMoveAnimation(moveFinishX - beginX)
-                } else if (getChoose() == rightChoose && choose.x <= choose.width && choose.x >= 0f) {
+                } else if (nowChoose == rightChoose && choose.x <= choose.width && choose.x >= 0f) {
                     rightMoveAnimation(moveFinishX - beginX)
                 }
                 return true
@@ -160,43 +159,24 @@ class MyButtonView : ConstraintLayout, View.OnTouchListener, View.OnClickListene
 
 
             MotionEvent.ACTION_UP -> {
-                //結束位置更新
-                if (getChoose() == leftChoose) {//左邊開始
-                    if (choose.x > myButton.width * 1 / 8 && endOfLeftOrRight == leftChoose) {//左邊結束
-                        endOfLeftOrRight = rightChoose
-                    }
-                    if (choose.x < myButton.width * 1 / 8 && endOfLeftOrRight == rightChoose) {
-                        endOfLeftOrRight = leftChoose
-                    }
-                } else if (getChoose() == rightChoose) {//右邊開始
-                    if (choose.x > myButton.width * 3 / 8 && endOfLeftOrRight == leftChoose) { // 左邊結束
-                        endOfLeftOrRight = rightChoose
-                    }
-                    if (choose.x < myButton.width * 3 / 8 && endOfLeftOrRight == rightChoose) {
-                        endOfLeftOrRight = leftChoose
-                    }
-                }
 
                 finishX = event.x
 
                 //是左邊被選的時候 && 最後動作是右滑
                 if (abs(finishX - beginX) > ViewConfiguration.get(context).scaledTouchSlop
-                    && getChoose() == leftChoose
+                    && nowChoose == leftChoose
                     && endOfLeftOrRight == rightChoose
                 ) {
-//                    Log.e(TAG,"ACTION_UP MOVE : 1 ")
-                    setTextViewColorGradient(tv1, unChooseTxtColor, unChooseTxtSecondColor)
-                    setTextViewColorGradient(tv2, chooseTxtColor, chooseTxtSecondColor)
                     val x: Int = myButton.width - choose.width
-                    val animator: ObjectAnimator = ObjectAnimator.ofFloat(choose, TRANSLATION_X, totalMoveX, x.toFloat())
-                    nowchoose = rightChoose
+                    val animator: ObjectAnimator =
+                        ObjectAnimator.ofFloat(choose, TRANSLATION_X, totalMoveX, x.toFloat())
                     animator.duration = 200
                     animator.start()
                 }
 
                 //是左邊被選的時候 && 動作是左滑
                 if (abs(finishX - beginX) > ViewConfiguration.get(context).scaledTouchSlop
-                    && getChoose() == leftChoose
+                    && nowChoose == leftChoose
                     && endOfLeftOrRight == leftChoose
                 ) {
                     objectAnimator(0, ANIMATOR_RIGHT_TO_LEFT)
@@ -205,59 +185,37 @@ class MyButtonView : ConstraintLayout, View.OnTouchListener, View.OnClickListene
 
                 //是右邊被選的時候 && 動作是右滑
                 if (abs(finishX - beginX) > ViewConfiguration.get(context).scaledTouchSlop
-                    && getChoose() == rightChoose
+                    && nowChoose == rightChoose
                     && endOfLeftOrRight == rightChoose
                 ) {
-//                    Log.e(TAG,"ACTION_UP MOVE : 3 ")
-                    setTextViewColorGradient(tv1, unChooseTxtColor, unChooseTxtSecondColor)
-                    setTextViewColorGradient(tv2, chooseTxtColor, chooseTxtSecondColor)
                     val x: Int = myButton.width - choose.width
                     val animator: ObjectAnimator =
                         ObjectAnimator.ofFloat(choose, TRANSLATION_X, totalMoveX, x.toFloat())
-                    nowchoose = rightChoose
                     animator.duration = 200
                     animator.start()
                 }
 
                 //是右邊被選的時候 && 動作是左滑
                 if (abs(finishX - beginX) > ViewConfiguration.get(context).scaledTouchSlop
-                    && getChoose() == rightChoose
+                    && nowChoose == rightChoose
                     && endOfLeftOrRight == leftChoose
                 ) {
-//                    Log.e(TAG,"ACTION_UP MOVE : 4 ")
                     objectAnimator(200, ANIMATOR_RIGHT_TO_LEFT)
                 }
 
                 //檢測移動的距離，如果很微小可以認為是點選事件
                 if (abs(finishX - beginX) < ViewConfiguration.get(context).scaledTouchSlop) {
-                    if (event.x < initX && getChoose() == rightChoose) {  //點擊左半邊
-                        setTextViewColorGradient(tv1, chooseTxtColor, chooseTxtSecondColor)
-                        setTextViewColorGradient(tv2, unChooseTxtColor, unChooseTxtSecondColor)
-                        nowchoose = leftChoose
+                    if (event.x < initX && nowChoose == rightChoose) {  //右邊被選 點擊左半邊
                         objectAnimator(200, ANIMATOR_RIGHT_TO_LEFT)
-                    } else if (event.x < initX && getChoose() == leftChoose) {  //點擊左半邊
-//                        Log.e(TAG,"ACTION_UP MOVE : 6 ")
-                        setTextViewColorGradient(tv1, chooseTxtColor, chooseTxtSecondColor)
-                        setTextViewColorGradient(tv2, unChooseTxtColor, unChooseTxtSecondColor)
-                        nowchoose = leftChoose
+                    } else if (event.x < initX && nowChoose == leftChoose) {  //左邊被選 點擊左半邊
                         objectAnimator(0, ANIMATOR_RIGHT_TO_LEFT)
-                    }
-
-                    if (event.x > initX && getChoose() == leftChoose) {  //點擊右半邊
-//                        Log.e(TAG,"ACTION_UP MOVE : 7 ")
-                        setTextViewColorGradient(tv1, unChooseTxtColor, unChooseTxtSecondColor)
-                        setTextViewColorGradient(tv2, chooseTxtColor, chooseTxtSecondColor)
-                        nowchoose = rightChoose
+                    } else if (event.x > initX && nowChoose == leftChoose) {  //左邊被選 點擊右半邊
                         objectAnimator(200, ANIMATOR_LEFT_TO_RIGHT)
-                    } else if (event.x > initX && getChoose() == rightChoose) {  //點擊右半邊
-//                        Log.e(TAG,"ACTION_UP MOVE : 8 ")
-                        setTextViewColorGradient(tv1, unChooseTxtColor, unChooseTxtSecondColor)
-                        setTextViewColorGradient(tv2, chooseTxtColor, chooseTxtSecondColor)
-                        nowchoose = rightChoose
+                    } else if (event.x > initX && nowChoose == rightChoose) {  //右邊被選 點擊右半邊
                         objectAnimator(0, ANIMATOR_LEFT_TO_RIGHT)
                     }
                 }
-
+                nowChoose = endOfLeftOrRight
                 beginX = 0f
                 finishX = 0f
 
@@ -315,10 +273,12 @@ class MyButtonView : ConstraintLayout, View.OnTouchListener, View.OnClickListene
     }
 
     private fun autoSettingChooseTxtColor() {
-        if (choose.x < myButton.width * 1 / 4) {
+        if (choose.x < A_QUARTER_LENGTH_X) {
+            endOfLeftOrRight = leftChoose
             setTextViewColorGradient(tv1, chooseTxtColor, chooseTxtSecondColor)
             setTextViewColorGradient(tv2, unChooseTxtColor, unChooseTxtSecondColor)
         } else {
+            endOfLeftOrRight = rightChoose
             setTextViewColorGradient(tv1, unChooseTxtColor, unChooseTxtSecondColor)
             setTextViewColorGradient(tv2, chooseTxtColor, chooseTxtSecondColor)
         }
@@ -331,30 +291,28 @@ class MyButtonView : ConstraintLayout, View.OnTouchListener, View.OnClickListene
     //0 left 1 right
     fun setChooseLeftOrRight(leftOrRight: Int) {
         initChoose = leftOrRight
-        nowchoose = initChoose
+        nowChoose = initChoose
         if (leftOrRight == leftChoose) {
             setTextViewColorGradient(tv1, chooseTxtColor, chooseTxtSecondColor)
             setTextViewColorGradient(tv2, unChooseTxtColor, unChooseTxtSecondColor)
-            val animator: ObjectAnimator =
-                ObjectAnimator.ofFloat(choose, TRANSLATION_X, HALF_LENGTH_X, 0f)
-            nowchoose = leftChoose
-            animator.duration = 0
-            animator.start()
+            nowChoose = leftChoose
         } else if (leftOrRight == rightChoose) {
             setTextViewColorGradient(tv1, unChooseTxtColor, unChooseTxtSecondColor)
             setTextViewColorGradient(tv2, chooseTxtColor, chooseTxtSecondColor)
-            val animator: ObjectAnimator =
-                ObjectAnimator.ofFloat(choose, TRANSLATION_X, 0f, HALF_LENGTH_X)
-            nowchoose = rightChoose
-            animator.duration = 0
-            animator.start()
+            nowChoose = rightChoose
         }
     }
 
     private fun objectAnimator(timeToDelay: Long, ANIMATOR_FLAG: Int) {
-        val animator: ObjectAnimator = if (ANIMATOR_FLAG == ANIMATOR_LEFT_TO_RIGHT) {
+        if (HALF_LENGTH_X == null) return
+        val animator: ObjectAnimator
+        animator = if (ANIMATOR_FLAG == ANIMATOR_LEFT_TO_RIGHT) {
+            setTextViewColorGradient(tv1, unChooseTxtColor, unChooseTxtSecondColor)
+            setTextViewColorGradient(tv2, chooseTxtColor, chooseTxtSecondColor)
             ObjectAnimator.ofFloat(choose, TRANSLATION_X, 0f, HALF_LENGTH_X)
         } else {
+            setTextViewColorGradient(tv1, chooseTxtColor, chooseTxtSecondColor)
+            setTextViewColorGradient(tv2, unChooseTxtColor, unChooseTxtSecondColor)
             ObjectAnimator.ofFloat(choose, TRANSLATION_X, HALF_LENGTH_X, 0f)
         }
         animator.duration = timeToDelay
@@ -403,10 +361,6 @@ class MyButtonView : ConstraintLayout, View.OnTouchListener, View.OnClickListene
     override fun performClick(): Boolean {
         super.performClick()
         return true
-    }
-
-    fun getChoose(): Int {
-        return nowchoose
     }
 
     override fun onClick(view: View?) {
